@@ -9,8 +9,8 @@
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
@@ -32,12 +32,10 @@
             display: none; 
             text-align: center;
             padding: 20px;
-            
         }
         h2 { 
             color: #ffffff; 
             text-align: center;
-           
         }
         .subject-item { 
             cursor: pointer; 
@@ -54,7 +52,7 @@
         .subject-item:hover { 
             background-color: #f1f1f1; 
         }
-        #subject-input{
+        #subject-input {
             font-size: 18px;
         }
         .selected { 
@@ -81,7 +79,6 @@
             font-size: 16px; 
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         }
-      
         input[type="text"] { 
             padding: 10px; 
             border-radius: 10px; 
@@ -118,44 +115,40 @@
             display: none; 
         }
         #rodape {
-        display: flex;
-        align-items: center; /* Alinha verticalmente no centro */
-        justify-content:center;
-        margin: 20px 0; /* Adiciona margem superior e inferior */
+            display: flex;
+            align-items: center; /* Alinha verticalmente no centro */
+            justify-content:center;
+            margin: 20px 0; /* Adiciona margem superior e inferior */
         }
-
         #rodape input[type="text"], 
         #rodape button {
             margin: 0 10px; /* Adiciona margem horizontal para espaçamento entre os itens */
         }
-        #cabecalho{
+        #cabecalho {
             background-color: #f95992;
             padding: 5px;
-            border-radius: 15px ;
+            border-radius: 15px;
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-            
         }
-        h3{
+        h3 {
             text-align: end;
             color:#ffffff;
         }
-        #current-subject{
+        #current-subject {
             color:#f95992;
             text-align: center;
             font-size: 35px;
             margin-bottom: 10px;
             margin-top: 5px;
         }
-        #custom-file-input,#file-input, #edit-photo-button, #back-button{
+        #custom-file-input,#file-input, #edit-photo-button, #back-button {
             background-color: #f95992;
         }
-        #topo{
+        #topo {
             background-color: #ffffff;
-            border-radius: 15px ;
+            border-radius: 15px;
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
             margin-bottom: 30px;
-            
-            
         }
     </style>
 </head>
@@ -165,7 +158,7 @@
             <div id="cabecalho">
                 <h2>EduSnap <i class="fa-solid fa-camera"></i> </h2>
             </div>
-                <h3>Subjects</h2>
+            <h3>Subjects</h3>
         </div>
         
         <div id="subject-list"></div>
@@ -175,10 +168,8 @@
             <button onclick="addSubject()">Add</button>
             <button id="edit-button" onclick="toggleEditMode()">Edit</button>
         </div>
-
     </div>
     
-
     <div id="subjects">
         <div id="topo">
             <h3 id="current-subject"></h3>
@@ -189,7 +180,7 @@
         <div id="photo-gallery"></div>
         <button id="edit-photo-button" onclick="togglePhotoEditMode()">Edit</button>
         <button id="back-button" onclick="goBackToMain()">Back</button>
-        </div>
+    </div>
 
     <div id="subject-detail">
         <video id="camera" autoplay playsinline style="width: 100%; border-radius: 4px;"></video>
@@ -233,18 +224,20 @@
 
         function addSubject() {
             const subject = document.getElementById('subject-input').value;
-            if (subject) {
-                const transaction = db.transaction(['subjects'], 'readwrite');
-                const store = transaction.objectStore('subjects');
-                store.add({ name: subject });
-                transaction.oncomplete = function() {
-                    updateSubjectList();
-                    document.getElementById('subject-input').value = '';
-                };
-                transaction.onerror = function(event) {
-                    console.error('Erro ao adicionar matéria:', event.target.errorCode);
-                };
-            }
+            if (subject.trim() === '') return;
+
+            const transaction = db.transaction(['subjects'], 'readwrite');
+            const store = transaction.objectStore('subjects');
+            store.add({ name: subject });
+
+            transaction.oncomplete = function() {
+                document.getElementById('subject-input').value = '';
+                updateSubjectList();
+            };
+
+            transaction.onerror = function(event) {
+                console.error('Erro ao adicionar assunto:', event.target.errorCode);
+            };
         }
 
         function updateSubjectList() {
@@ -256,28 +249,27 @@
 
             request.onsuccess = function(event) {
                 const subjects = event.target.result;
-                subjects.forEach((subject) => {
+                subjects.forEach(subject => {
                     const div = document.createElement('div');
-                    div.textContent = subject.name;
                     div.className = 'subject-item';
+                    div.textContent = subject.name;
                     div.onclick = () => {
                         if (isEditing) {
-                            toggleSelection(div, subject.id);
+                            toggleSubjectSelection(div, subject.id);
                         } else {
-                            openSubject(subject.name);
+                            showSubjectDetail(subject.name);
                         }
                     };
                     subjectList.appendChild(div);
                 });
-                updateEditButton();
             };
 
             request.onerror = function(event) {
-                console.error('Erro ao buscar matérias:', event.target.errorCode);
+                console.error('Erro ao buscar assuntos:', event.target.errorCode);
             };
         }
 
-        function toggleSelection(element, id) {
+        function toggleSubjectSelection(element, id) {
             if (selectedSubjects.has(id)) {
                 selectedSubjects.delete(id);
                 element.classList.remove('selected');
@@ -285,72 +277,52 @@
                 selectedSubjects.add(id);
                 element.classList.add('selected');
             }
-            updateEditButton();
-        }
-
-        function updateEditButton() {
-            const editButton = document.getElementById('edit-button');
-            if (isEditing) {
-                if (selectedSubjects.size > 0) {
-                    editButton.textContent = 'Delete';
-                } else {
-                    editButton.textContent = 'Cancel';
-                }
-            } else {
-                editButton.textContent = 'Edit';
-            }
         }
 
         function toggleEditMode() {
+            isEditing = !isEditing;
             if (isEditing) {
-                if (selectedSubjects.size > 0) {
-                    deleteSelectedSubjects();
-                } else {
-                    exitEditMode();
-                }
+                document.querySelectorAll('.subject-item').forEach(item => item.classList.add('edit-mode'));
             } else {
-                isEditing = true;
-                document.querySelectorAll('.subject-item').forEach((item, index) => {
-                    item.classList.add('edit-mode');
-                    if (selectedSubjects.has(index)) {
-                        item.classList.add('selected');
-                    }
-                });
-                updateEditButton();
+                document.querySelectorAll('.subject-item').forEach(item => item.classList.remove('edit-mode', 'selected'));
+                selectedSubjects.clear();
             }
+            updateSubjectList();
         }
 
-        function deleteSelectedSubjects() {
-            const transaction = db.transaction(['subjects'], 'readwrite');
-            const store = transaction.objectStore('subjects');
-            selectedSubjects.forEach(id => {
-                store.delete(id);
-            });
-            transaction.oncomplete = function() {
-                updateSubjectList();
-                exitEditMode();
-            };
-            transaction.onerror = function(event) {
-                console.error('Erro ao excluir matérias:', event.target.errorCode);
-            };
-        }
-
-        function exitEditMode() {
-            isEditing = false;
-            document.querySelectorAll('.subject-item').forEach(item => {
-                item.classList.remove('edit-mode');
-                item.classList.remove('selected');
-            });
-            selectedSubjects.clear();
-            updateEditButton();
-        }
-
-        function openSubject(subjectName) {
-            currentSubject = subjectName;
-            document.getElementById('current-subject').textContent = subjectName;
+        function showSubjectDetail(subject) {
+            currentSubject = subject;
+            document.getElementById('current-subject').textContent = subject;
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('subjects').style.display = 'block';
             updatePhotoGallery();
+        }
+
+        function goBackToMain() {
+            document.getElementById('subjects').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const photoData = event.target.result;
+                const transaction = db.transaction(['photos'], 'readwrite');
+                const store = transaction.objectStore('photos');
+                store.add({ data: photoData, subject: currentSubject });
+
+                transaction.oncomplete = function() {
+                    updatePhotoGallery();
+                };
+
+                transaction.onerror = function(event) {
+                    console.error('Erro ao adicionar foto:', event.target.errorCode);
+                };
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         function updatePhotoGallery() {
@@ -372,6 +344,11 @@
                             viewPhoto(img.src);
                         }
                     };
+                    if (!isPhotoEditing) {
+                        img.style.pointerEvents = 'none'; // Desativa eventos de clique se não estiver no modo de edição
+                    } else {
+                        img.style.pointerEvents = 'auto'; // Ativa eventos de clique se estiver no modo de edição
+                    }
                     photoGallery.appendChild(img);
                 });
                 updatePhotoEditButton();
@@ -382,30 +359,6 @@
             };
         }
 
-        function viewPhoto(src) {
-            const img = document.createElement('img');
-            img.src = src;
-            img.style.width = '100%';
-            img.style.border = '3px solid #ff5722';
-            document.body.appendChild(img);
-        }
-
-        function togglePhotoEditMode() {
-            if (isPhotoEditing) {
-                if (selectedPhotos.size > 0) {
-                    deleteSelectedPhotos();
-                } else {
-                    exitPhotoEditMode();
-                }
-            } else {
-                isPhotoEditing = true;
-                document.querySelectorAll('#photo-gallery img').forEach(img => {
-                    img.classList.add('edit-mode-photo');
-                });
-                updatePhotoEditButton();
-            }
-        }
-
         function togglePhotoSelection(img, id) {
             if (selectedPhotos.has(id)) {
                 selectedPhotos.delete(id);
@@ -414,31 +367,6 @@
                 selectedPhotos.add(id);
                 img.classList.add('selected-photo');
             }
-            updatePhotoEditButton();
-        }
-
-        function deleteSelectedPhotos() {
-            const transaction = db.transaction(['photos'], 'readwrite');
-            const store = transaction.objectStore('photos');
-            selectedPhotos.forEach(id => {
-                store.delete(id);
-            });
-            transaction.oncomplete = function() {
-                updatePhotoGallery();
-                exitPhotoEditMode();
-            };
-            transaction.onerror = function(event) {
-                console.error('Erro ao excluir fotos:', event.target.errorCode);
-            };
-        }
-
-        function exitPhotoEditMode() {
-            isPhotoEditing = false;
-            document.querySelectorAll('#photo-gallery img').forEach(img => {
-                img.classList.remove('edit-mode-photo');
-                img.classList.remove('selected-photo');
-            });
-            selectedPhotos.clear();
             updatePhotoEditButton();
         }
 
@@ -455,80 +383,104 @@
             }
         }
 
-        function openCamera() {
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('subject-detail').style.display = 'block';
+        function togglePhotoEditMode() {
+            if (isPhotoEditing) {
+                if (selectedPhotos.size > 0) {
+                    deleteSelectedPhotos();
+                } else {
+                    exitPhotoEditMode();
+                }
+            } else {
+                isPhotoEditing = true;
+                document.querySelectorAll('#photo-gallery img').forEach(img => {
+                    img.classList.add('edit-mode-photo');
+                    img.style.pointerEvents = 'auto'; // Ativa eventos de clique
+                });
+                updatePhotoEditButton();
+            }
+        }
+
+        function exitPhotoEditMode() {
+            isPhotoEditing = false;
+            document.querySelectorAll('#photo-gallery img').forEach(img => {
+                img.classList.remove('edit-mode-photo');
+                img.classList.remove('selected-photo');
+                img.style.pointerEvents = 'none'; // Desativa eventos de clique
+            });
+            selectedPhotos.clear();
+            updatePhotoEditButton();
+        }
+
+        function deleteSelectedPhotos() {
+            selectedPhotos.forEach(id => {
+                const transaction = db.transaction(['photos'], 'readwrite');
+                const store = transaction.objectStore('photos');
+                store.delete(id);
+            });
+            const transaction = db.transaction(['photos'], 'readonly');
+            const store = transaction.objectStore('photos');
+            store.getAll().onsuccess = function(event) {
+                const photos = event.target.result.filter(photo => photo.subject === currentSubject);
+                photos.forEach(photo => {
+                    URL.revokeObjectURL(photo.data); // Libera memória do objeto URL
+                });
+            };
+            transaction.oncomplete = function() {
+                exitPhotoEditMode();
+                updatePhotoGallery();
+            };
+
+            transaction.onerror = function(event) {
+                console.error('Erro ao excluir fotos:', event.target.errorCode);
+            };
+        }
+
+        function viewPhoto(src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '100%';
+            img.style.border = '3px solid #ff5722';
+            document.body.appendChild(img);
+        }
+
+        function cancelPhotoCapture() {
+            videoElement.style.display = 'none';
+            canvas.style.display = 'none';
+            document.getElementById('subject-detail').style.display = 'none';
+            document.getElementById('subjects').style.display = 'block';
+        }
+
+        document.getElementById('take-photo').addEventListener('click', () => {
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(blob => {
+                const transaction = db.transaction(['photos'], 'readwrite');
+                const store = transaction.objectStore('photos');
+                store.add({ data: blob, subject: currentSubject });
+                transaction.oncomplete = function() {
+                    updatePhotoGallery();
+                    cancelPhotoCapture();
+                };
+                transaction.onerror = function(event) {
+                    console.error('Erro ao adicionar foto da câmera:', event.target.errorCode);
+                };
+            }, 'image/jpeg');
+        });
+
+        function setupCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     videoElement.srcObject = stream;
+                    videoElement.play();
                 })
                 .catch(err => {
                     console.error('Erro ao acessar a câmera:', err);
                 });
         }
 
-        function cancelPhotoCapture() {
-            document.getElementById('subject-detail').style.display = 'none';
-            document.getElementById('subjects').style.display = 'block';
-            const stream = videoElement.srcObject;
-            if (stream) {
-                const tracks = stream.getTracks();
-                tracks.forEach(track => track.stop());
-            }
-            videoElement.srcObject = null;
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const blob = new Blob([e.target.result], { type: file.type });
-                    const transaction = db.transaction(['photos'], 'readwrite');
-                    const store = transaction.objectStore('photos');
-                    store.add({
-                        subject: currentSubject,
-                        data: blob
-                    });
-                    transaction.oncomplete = function() {
-                        updatePhotoGallery();
-                    };
-                    transaction.onerror = function(event) {
-                        console.error('Erro ao adicionar foto:', event.target.errorCode);
-                    };
-                };
-                reader.readAsArrayBuffer(file);
-            }
-        }
-
-        document.getElementById('take-photo').addEventListener('click', function() {
-            const video = document.querySelector('#camera');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0);
-            canvas.toBlob(function(blob) {
-                const transaction = db.transaction(['photos'], 'readwrite');
-                const store = transaction.objectStore('photos');
-                store.add({
-                    subject: currentSubject,
-                    data: blob
-                });
-                transaction.oncomplete = function() {
-                    updatePhotoGallery();
-                    cancelPhotoCapture();
-                };
-                transaction.onerror = function(event) {
-                    console.error('Erro ao adicionar foto:', event.target.errorCode);
-                };
-            });
-        });
-
-        function goBackToMain() {
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('main-menu').style.display = 'block';
-        }
-
         openDB();
+        setupCamera();
     </script>
 </body>
 </html>
