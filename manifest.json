@@ -1,0 +1,37 @@
+{
+  "background_color": "#232f94",
+  "dir": "ltr",
+  "display": "fullscreen",
+  "name": "profvictor.github",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "profvictor.github",
+  "start_url": "https://profvictor.github.io/EduSnap/",
+  "theme_color": "#232f94",
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "favicon.ico",
+      "type": "image/x-icon"
+    }
+  ],
+  "id": "EduSnap",
+  "description": "App to store your precious notes",
+  "lang": "en",
+  "categories": [
+    "education"
+  ]
+}
