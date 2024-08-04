@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduSnap</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
@@ -14,14 +15,18 @@
         }
         #main-menu, #subjects, #subject-detail { 
             padding: 20px; 
-            border-radius: 8px; 
+            border-radius: 15px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.1); 
             justify-content: center;
             align-items: center;
+            background-color: #232f94;
+            margin: 10px;
         }
         #subjects, #subject-detail { 
             display: none; 
             text-align: center;
+            padding: 20px;
+            
         }
         h2 { 
             color: #ffffff; 
@@ -36,6 +41,9 @@
             margin: 5px 0; 
             background-color: #fff; 
             transition: background-color 0.3s; 
+            color: #232f94;
+            font-weight: bold;
+            font-size: 20px;
         }
         .subject-item:hover { 
             background-color: #f1f1f1; 
@@ -44,7 +52,7 @@
             font-size: 18px;
         }
         .selected { 
-            background-color: #e0e0e0; 
+            background-color: #e91b1b; 
         }
         #photo-gallery img { 
             max-width: 100%; 
@@ -61,18 +69,16 @@
             padding: 10px 15px; 
             border: none; 
             border-radius: 15px; 
-            background-color: #007bff; 
+            background-color: #f95992; 
             color: #fff; 
             cursor: pointer; 
             font-size: 16px; 
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         }
-        button:hover { 
-            background-color: #0056b3; 
-        }
+      
         input[type="text"] { 
             padding: 10px; 
-            border-radius: 4px; 
+            border-radius: 10px; 
             border: 1px solid #ddd; 
             width: calc(100% - 22px); 
             margin-bottom: 10px; 
@@ -100,7 +106,7 @@
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         }
         .custom-file-input:hover { 
-            background-color: #0056b3; 
+            background-color: #007bff; 
         }
         #file-input { 
             display: none; 
@@ -117,20 +123,33 @@
             margin: 0 10px; /* Adiciona margem horizontal para espaçamento entre os itens */
         }
         #cabecalho{
-            background-color: #ff5722;
+            background-color: #f95992;
             padding: 5px;
             border-radius: 15px ;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
             
         }
         h3{
             text-align: end;
-            color:#858585;
+            color:#ffffff;
         }
         #current-subject{
-            color:#ff5722;
+            color:#f95992;
             text-align: center;
-            font-size: 30px;
+            font-size: 35px;
             margin-bottom: 10px;
+            margin-top: 5px;
+        }
+        #custom-file-input,#file-input, #edit-photo-button, #back-button{
+            background-color: #f95992;
+        }
+        #topo{
+            background-color: #ffffff;
+            border-radius: 15px ;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            margin-bottom: 30px;
+            
+            
         }
     </style>
 </head>
@@ -155,13 +174,16 @@
     
 
     <div id="subjects">
-        <h3 id="current-subject"></h3>
+        <div id="topo">
+            <h3 id="current-subject"></h3>
+        </div>
+        
         <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
         <label for="file-input" class="custom-file-input">Add Photo</label>
         <div id="photo-gallery"></div>
         <button id="edit-photo-button" onclick="togglePhotoEditMode()">Edit</button>
-        <button onclick="goBackToMain()">Back</button>
-    </div>
+        <button id="back-button" onclick="goBackToMain()">Back</button>
+        </div>
 
     <div id="subject-detail">
         <video id="camera" autoplay playsinline style="width: 100%; border-radius: 4px;"></video>
