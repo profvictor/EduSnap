@@ -5,6 +5,14 @@ Um aplicativo web progressivo (PWA) para facilitar a revisão de conteúdos.
 ## Descrição
 Este projeto tem como objetivo auxiliar os alunos a organizarem seus estudos de forma eficiente. Através dele, é possível adicionar novas matérias, fazer upload de imagens (lousa, caderno) e acessar os conteúdos de forma rápida e fácil, diretamente do celular.
 
+## Como utilizar
+Adicione uma disciplica na barra inferior e clique em "add", e ela aparecerá na lista de "Subjects".
+Clique em editar e selecione a disciplina que quer apagar e após ficar destacada em vermelho, clique "Delete".
+
+Entre na disciplina em questão e clique em "Add Photo".
+Selecione a melhor opção para você, seja uma foto já de sua galeria ou a câmera para tirar a foto no momento.
+Você pode excluir a foto clicando em "Edit", selecionando e "Delete".
+
 ## Tecnologias Utilizadas
 * HTML
 * CSS
